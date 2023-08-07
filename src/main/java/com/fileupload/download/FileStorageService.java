@@ -36,6 +36,10 @@ public class FileStorageService {
 	private String uploadDir = "C:/MaheMyFiles/Storage";
 
 	String modifiedName;
+	
+	String aadhar = "aadhar";
+	String pancard = "pancard";
+	String salaryslip = "salaryslip";
 
 	// ------ Uploading files -----------------
 
@@ -52,17 +56,17 @@ public class FileStorageService {
 
 		FileEntity fileEntity = new FileEntity();
 
-		if ("aadhar".equals(fileDiffer)) {
+		if (aadhar.equals(fileDiffer)) {
 			// fileEntity.getId();
 			fileEntity.setAadharCard(fileName);
 			fileEntity.setAaSize(fileSize);
 			fileEntity.setAaType(fileDiffer);
-		} else if ("pancard".equals(fileDiffer)) {
+		} else if (pancard.equals(fileDiffer)) {
 			// fileEntity.getId();
 			fileEntity.setPanCard(fileName);
 			fileEntity.setPaSize(fileSize);
 			fileEntity.setPaType(fileDiffer);
-		} else if ("salaryslip".equals(fileDiffer)) {
+		} else if (salaryslip.equals(fileDiffer)) {
 			// fileEntity.getId();
 			fileEntity.setSalarySlip(fileName);
 			fileEntity.setSaSize(fileSize);
@@ -99,15 +103,15 @@ public class FileStorageService {
 	// ----------------------- Upload by using PUT ----------------------
 
 	public FileEntity uploadAadharByIdById(MultipartFile file, String id) throws IOException {
-		return storeFileByIdCheck(file, "aadhar", id);
+		return storeFileByIdCheck(file, aadhar, id);
 	}
 
 	public FileEntity uploadPanCardById(MultipartFile file, String id) throws IOException {
-		return storeFileByIdCheck(file, "pancard", id);
+		return storeFileByIdCheck(file, pancard, id);
 	}
 
 	public FileEntity uploadSalarySlipById(MultipartFile file, String id) throws IOException {
-		return storeFileByIdCheck(file, "salaryslip", id);
+		return storeFileByIdCheck(file, salaryslip, id);
 	}
 
 	@Transactional
@@ -131,18 +135,18 @@ public class FileStorageService {
 						"Invalid file type:" + fileExtension + ". Only PDF/DOCX files are allowed.");
 			}
 
-			if ("aadhar".equals(fileDiffer)) {
-				fileEntity.setAadharCard("aadhar");
+			if (aadhar.equals(fileDiffer)) {
+				fileEntity.setAadharCard(aadhar);
 				fileEntity.setAaSize(fileSize);
 				fileEntity.setAaData(file.getBytes());
 				fileEntity.setAaType(file.getContentType());
-			} else if ("pancard".equals(fileDiffer)) {
-				fileEntity.setPanCard("pancard");
+			} else if (pancard.equals(fileDiffer)) {
+				fileEntity.setPanCard(pancard);
 				fileEntity.setPaSize(fileSize);
 				fileEntity.setPaData(file.getBytes());
 				fileEntity.setPaType(file.getContentType());
-			} else if ("salaryslip".equals(fileDiffer)) {
-				fileEntity.setSalarySlip("salaryslip");
+			} else if (salaryslip.equals(fileDiffer)) {
+				fileEntity.setSalarySlip(salaryslip);
 				fileEntity.setSaSize(fileSize);
 				fileEntity.setSaData(file.getBytes());
 				fileEntity.setSaType(file.getContentType());
@@ -166,6 +170,7 @@ public class FileStorageService {
 			Files.write(filePath, file.getBytes());
 			
 			//Just i am storing the exact file no need if not required
+			//if you do like this the code will be stored as byte code. So you can;t see the file in postman. only byte code is avaiable
 			modifiedName = fileDiffer + fileExtension;
 			Path filePathModified = directoryPath.resolve(modifiedName);
 			Files.write(filePathModified, file.getBytes());
@@ -242,13 +247,13 @@ public class FileStorageService {
 			String fileName = null;
 			String fileWhichType = null;
 
-			if ("aadhar".equals(fileDiffer)) {
+			if (aadhar.equals(fileDiffer)) {
 				fileName = fileEntity.getAadharCard();
 				fileWhichType = fileEntity.getAaType();
-			} else if ("pancard".equals(fileDiffer)) {
+			} else if (pancard.equals(fileDiffer)) {
 				fileName = fileEntity.getPanCard();
 				fileWhichType = fileEntity.getPaType();
-			} else if ("salaryslip".equals(fileDiffer)) {
+			} else if (salaryslip.equals(fileDiffer)) {
 				fileName = fileEntity.getSalarySlip();
 				fileWhichType = fileEntity.getSaType();
 			} else {
@@ -287,13 +292,13 @@ public class FileStorageService {
 		if (!fileEntities.isEmpty()) {
 			FileEntity fileEntity = null;
 			for (FileEntity entity : fileEntities) {
-				if (fileDiffer.equals("aadhar") && entity.getAadharCard() != null) {
+				if (fileDiffer.equals(aadhar) && entity.getAadharCard() != null) {
 					fileEntity = entity;
 					break;
-				} else if (fileDiffer.equals("pancard") && entity.getPanCard() != null) {
+				} else if (fileDiffer.equals(pancard) && entity.getPanCard() != null) {
 					fileEntity = entity;
 					break;
-				} else if (fileDiffer.equals("salaryslip") && entity.getSalarySlip() != null) {
+				} else if (fileDiffer.equals(salaryslip) && entity.getSalarySlip() != null) {
 					fileEntity = entity;
 					break;
 				}
@@ -302,13 +307,13 @@ public class FileStorageService {
 			String fileName = null;
 			String fileWhichType = null;
 
-			if ("aadhar".equals(fileDiffer)) {
+			if (aadhar.equals(fileDiffer)) {
 				fileName = fileEntity.getAadharCard();
 				fileWhichType = fileEntity.getAaType();
-			} else if ("pancard".equals(fileDiffer)) {
+			} else if (pancard.equals(fileDiffer)) {
 				fileName = fileEntity.getPanCard();
 				fileWhichType = fileEntity.getPaType();
-			} else if ("salaryslip".equals(fileDiffer)) {
+			} else if (salaryslip.equals(fileDiffer)) {
 				fileName = fileEntity.getSalarySlip();
 				fileWhichType = fileEntity.getSaType();
 			} else {
@@ -350,13 +355,13 @@ public class FileStorageService {
 				String filePath = null;
 				String entryName = null;
 
-				if ("aadhar".equals(fileDiffer)) {
+				if (aadhar.equals(fileDiffer)) {
 					filePath = Paths.get(uploadDir, id, "aadhar.pdf").toString();
 					entryName = "aadhar.pdf";
-				} else if ("pancard".equals(fileDiffer)) {
+				} else if (pancard.equals(fileDiffer)) {
 					filePath = Paths.get(uploadDir, id, "pancard.pdf").toString();
 					entryName = "pancard.pdf";
-				} else if ("salaryslip".equals(fileDiffer)) {
+				} else if (salaryslip.equals(fileDiffer)) {
 					filePath = Paths.get(uploadDir, id, "salaryslip.pdf").toString();
 					entryName = "salaryslip.pdf";
 				}
@@ -399,12 +404,12 @@ public class FileStorageService {
  * 
  * 
  * public FileEntity uploadAadhar(MultipartFile file) throws IOException {
- * return storeFile(file, "aadhar"); } public FileEntity
+ * return storeFile(file, aadhar); } public FileEntity
  * uploadPanCard(MultipartFile file) throws IOException { return storeFile(file,
- * "pancard"); }
+ * pancard); }
  * 
  * public FileEntity uploadSalarySlip(MultipartFile file) throws IOException {
- * return storeFile(file, "salaryslip"); }
+ * return storeFile(file, salaryslip); }
  * 
  * 
  * 
