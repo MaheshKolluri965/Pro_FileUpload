@@ -1,0 +1,70 @@
+<div class="documentDetailsForm">
+    <div class="form">
+      <div class="title">
+        <h2>File Upload Details</h2>
+      </div>
+      <div class="documents">
+  
+        <!-- Upload Default which create an entry in DB -->
+        <div class="form-group">
+          <label class="form-label">Upload Default:</label>
+          <div class="input-group mb-3">
+            <span class="input-group">
+              <input type="file" class="form-control" (change)="onDefaultFileSelected($event)">
+              <button class="btn btn-primary" (click)="uploadDefault()">Upload</button>
+            </span>
+          </div>
+        </div>
+  
+        <!-- Upload Aadhar By Id -->
+        <div class="form-group">
+          <label class="form-label">Upload Aadhar By Id</label>
+          <div class="input-group mb-3">
+            <span class="input-group">
+              <input type="file" class="form-control" (change)="onAadharFileSelected($event)">
+              <button class="btn btn-primary" (click)="uploadAadharById(id)">Upload</button>
+            </span>
+          </div>
+        </div>
+  
+        <!-- Upload Pan Card By id -->
+        <div class="form-group">
+          <label class="form-label">Upload Pan Card by id</label>
+          <div class="input-group mb-3">
+            <span class="input-group">
+              <input type="file" class="form-control" (change)="onPanCardFileSelected($event)">
+              <button class="btn btn-primary" (click)="uploadPanCardById(id)">Upload</button>
+            </span>
+          </div>
+        </div>
+  
+  
+        <!-- Upload Pan Card by id -->
+        <div class="form-group">
+          <label class="form-label">Upload Salaryslip By ID</label>
+          <div class="input-group mb-3">
+            <span class="input-group">
+              <input type="file" class="form-control" (change)="onSalarySlipFileSelected($event)">
+              <button class="btn btn-primary" (click)="uploadSalarySlipById(id)">Upload</button>
+            </span>
+          </div>
+        </div>
+  
+        <br><br>
+      </div>
+    </div>
+  
+    <div class="downloadFile">
+      <div>
+        <span class="input-group">
+          <button class="btn btn-primary" (click)="downloadFileById(id, aadhar)">Download Aadhar ById</button>
+          &nbsp;
+          <button class="btn btn-primary" (click)="downloadFileById(id, panCard)">Download Pancard ById</button>
+          &nbsp;
+          <button class="btn btn-primary" (click)="downloadFileById(id, salarySlip)">Download Salaryslip ById</button>
+          &nbsp;
+          <button class="btn btn-primary" (click)="downloadZipFileById(id)">Download ZIP File ById</button>
+        </span>
+      </div>
+    </div>
+  </div>
