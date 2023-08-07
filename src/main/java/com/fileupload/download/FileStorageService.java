@@ -45,31 +45,32 @@ public class FileStorageService {
 	}
 
 	@Transactional
-	public FileEntity storeFile(MultipartFile file, String fileType) throws IOException {
+	public FileEntity storeFile(MultipartFile file, String fileDiffer) throws IOException {
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 		long fileSize = file.getSize();
+		System.out.println("in");
 
 		FileEntity fileEntity = new FileEntity();
 
-		if ("aadhar".equals(fileType)) {
+		if ("aadhar".equals(fileDiffer)) {
 			// fileEntity.getId();
 			fileEntity.setAadharCard(fileName);
 			fileEntity.setAaSize(fileSize);
-			fileEntity.setAaType(fileType);
-		} else if ("pancard".equals(fileType)) {
+			fileEntity.setAaType(fileDiffer);
+		} else if ("pancard".equals(fileDiffer)) {
 			// fileEntity.getId();
 			fileEntity.setPanCard(fileName);
 			fileEntity.setPaSize(fileSize);
-			fileEntity.setPaType(fileType);
-		} else if ("salaryslip".equals(fileType)) {
+			fileEntity.setPaType(fileDiffer);
+		} else if ("salaryslip".equals(fileDiffer)) {
 			// fileEntity.getId();
 			fileEntity.setSalarySlip(fileName);
 			fileEntity.setSaSize(fileSize);
-			fileEntity.setSaType(fileType);
-		} else if ("file".equals(fileType)) {
+			fileEntity.setSaType(fileDiffer);
+		} else if ("file".equals(fileDiffer)) {
 			// fileEntity.getId();
 			fileEntity.setName(fileName);
-			fileEntity.setFileSize(fileSize);
+			//fileEntity.setFileSize(fileSize);
 			fileEntity.setData(file.getBytes());
 			fileEntity.setType(file.getContentType());
 		}
@@ -131,17 +132,17 @@ public class FileStorageService {
 			}
 
 			if ("aadhar".equals(fileDiffer)) {
-				fileEntity.setAadharCard("aadhar" + fileExtension);
+				fileEntity.setAadharCard("aadhar");
 				fileEntity.setAaSize(fileSize);
 				fileEntity.setAaData(file.getBytes());
 				fileEntity.setAaType(file.getContentType());
 			} else if ("pancard".equals(fileDiffer)) {
-				fileEntity.setPanCard("pancard" + fileExtension);
+				fileEntity.setPanCard("pancard");
 				fileEntity.setPaSize(fileSize);
 				fileEntity.setPaData(file.getBytes());
 				fileEntity.setPaType(file.getContentType());
 			} else if ("salaryslip".equals(fileDiffer)) {
-				fileEntity.setSalarySlip("salaryslip" + fileExtension);
+				fileEntity.setSalarySlip("salaryslip");
 				fileEntity.setSaSize(fileSize);
 				fileEntity.setSaData(file.getBytes());
 				fileEntity.setSaType(file.getContentType());
@@ -159,11 +160,15 @@ public class FileStorageService {
 			Files.createDirectories(directoryPath);
 
 			// Get the file extension from the original file name
-			modifiedName = fileDiffer + fileExtension;
-
+			String originalName = fileDiffer;
+			Path filePath = directoryPath.resolve(originalName);
 			// Store the file content in the created directory
-			Path filePath = directoryPath.resolve(modifiedName);
 			Files.write(filePath, file.getBytes());
+			
+			//Just i am storing the exact file no need if not required
+			modifiedName = fileDiffer + fileExtension;
+			Path filePathModified = directoryPath.resolve(modifiedName);
+			Files.write(filePathModified, file.getBytes());
 			return fileEntity;
 
 		} else {
@@ -224,9 +229,10 @@ public class FileStorageService {
 
 	// -------------------End of Zip File-----------------------------------
 
-	// --------------------Single File Download within the ID ------------------
+	// --------------------Single File Download within the ID ------------------ This code is retrieving 
+	//the file data from a local storage directory based on the information stored in a database.
 
-	public ResponseEntity<Resource> downloadFileByIdAndTypeSingleFile(String id, String fileType) {
+	public ResponseEntity<Resource> downloadFileByIdAndTypeSingleFile(String id, String fileDiffer) {
 
 		// Check if a FileEntity with the given ID exists in the database
 		Optional<FileEntity> optionalFileEntity = fileRepo.findById(id);
@@ -236,13 +242,13 @@ public class FileStorageService {
 			String fileName = null;
 			String fileWhichType = null;
 
-			if ("aadhar".equals(fileType)) {
+			if ("aadhar".equals(fileDiffer)) {
 				fileName = fileEntity.getAadharCard();
 				fileWhichType = fileEntity.getAaType();
-			} else if ("pancard".equals(fileType)) {
+			} else if ("pancard".equals(fileDiffer)) {
 				fileName = fileEntity.getPanCard();
 				fileWhichType = fileEntity.getPaType();
-			} else if ("salaryslip".equals(fileType)) {
+			} else if ("salaryslip".equals(fileDiffer)) {
 				fileName = fileEntity.getSalarySlip();
 				fileWhichType = fileEntity.getSaType();
 			} else {
@@ -261,7 +267,7 @@ public class FileStorageService {
 
 					return ResponseEntity.ok()
 							.header(HttpHeaders.CONTENT_DISPOSITION,
-									"attachment; filename=\"" + fileEntity.getName() + "\"")
+									"attachment; filename=\"" + fileName + "\"")
 							.contentType(MediaType.parseMediaType(fileWhichType)).body(resource);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -274,20 +280,20 @@ public class FileStorageService {
 	}
 
 	// Second Method -- using list property -- complex
-	public ResponseEntity<Resource> downloadFileByIdAndTypeSingleFile1(String id, String fileType) {
+	public ResponseEntity<Resource> downloadFileByIdAndTypeSingleFile1(String id, String fileDiffer) {
 		List<FileEntity> fileEntities = fileRepo.findAllById(id);
 		System.out.println(fileEntities.toString());
 		// Check filtType and provides the object
 		if (!fileEntities.isEmpty()) {
 			FileEntity fileEntity = null;
 			for (FileEntity entity : fileEntities) {
-				if (fileType.equals("aadhar") && entity.getAadharCard() != null) {
+				if (fileDiffer.equals("aadhar") && entity.getAadharCard() != null) {
 					fileEntity = entity;
 					break;
-				} else if (fileType.equals("pancard") && entity.getPanCard() != null) {
+				} else if (fileDiffer.equals("pancard") && entity.getPanCard() != null) {
 					fileEntity = entity;
 					break;
-				} else if (fileType.equals("salaryslip") && entity.getSalarySlip() != null) {
+				} else if (fileDiffer.equals("salaryslip") && entity.getSalarySlip() != null) {
 					fileEntity = entity;
 					break;
 				}
@@ -296,13 +302,13 @@ public class FileStorageService {
 			String fileName = null;
 			String fileWhichType = null;
 
-			if ("aadhar".equals(fileType)) {
+			if ("aadhar".equals(fileDiffer)) {
 				fileName = fileEntity.getAadharCard();
 				fileWhichType = fileEntity.getAaType();
-			} else if ("pancard".equals(fileType)) {
+			} else if ("pancard".equals(fileDiffer)) {
 				fileName = fileEntity.getPanCard();
 				fileWhichType = fileEntity.getPaType();
-			} else if ("salaryslip".equals(fileType)) {
+			} else if ("salaryslip".equals(fileDiffer)) {
 				fileName = fileEntity.getSalarySlip();
 				fileWhichType = fileEntity.getSaType();
 			} else {
@@ -334,7 +340,7 @@ public class FileStorageService {
 
 	// ----------------- individual Zip File -----------------------
 
-	public ResponseEntity<Resource> downloadFilesByIdAndTypeSingleFileZip(String id, String fileType) {
+	public ResponseEntity<Resource> downloadFilesByIdAndTypeSingleFileZip(String id, String fileDiffer) {
 		List<FileEntity> fileEntities = fileRepo.findAllById(id);
 
 		if (!fileEntities.isEmpty()) {
@@ -344,13 +350,13 @@ public class FileStorageService {
 				String filePath = null;
 				String entryName = null;
 
-				if ("aadhar".equals(fileType)) {
+				if ("aadhar".equals(fileDiffer)) {
 					filePath = Paths.get(uploadDir, id, "aadhar.pdf").toString();
 					entryName = "aadhar.pdf";
-				} else if ("pancard".equals(fileType)) {
+				} else if ("pancard".equals(fileDiffer)) {
 					filePath = Paths.get(uploadDir, id, "pancard.pdf").toString();
 					entryName = "pancard.pdf";
-				} else if ("salaryslip".equals(fileType)) {
+				} else if ("salaryslip".equals(fileDiffer)) {
 					filePath = Paths.get(uploadDir, id, "salaryslip.pdf").toString();
 					entryName = "salaryslip.pdf";
 				}
